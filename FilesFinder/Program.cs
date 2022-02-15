@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using FilesFinder.Conf;
 using Serilog;
+using Serilog.Exceptions;
 
 namespace FilesFinder
 {
@@ -16,7 +17,14 @@ namespace FilesFinder
 		static void Main(string[] args)
 		{
 			LoggerInit();
-			Run().Wait();
+			try
+			{
+				Run().Wait();
+			}
+			catch (Exception e)
+			{
+				Log.Error(e, "Ошибка во время выполнения");
+			}
 			Console.ReadLine();
 		}
 
@@ -185,6 +193,7 @@ namespace FilesFinder
 		private static void LoggerInit()
 		{
 			Log.Logger = new LoggerConfiguration()
+				.Enrich.WithExceptionDetails()
 				.ReadFrom.Configuration(Configuration.GetAppConfiguration())
 				.CreateLogger();
 		}

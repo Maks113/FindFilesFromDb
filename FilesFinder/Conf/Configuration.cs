@@ -10,7 +10,6 @@ namespace FilesFinder.Conf
 			return new ConfigurationBuilder()
 				.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
 				.AddJsonFile("appsettings.json", false, true)
-				.AddJsonFile("appsettings.local.json", true, true)
 				.Build();
 		}
 
