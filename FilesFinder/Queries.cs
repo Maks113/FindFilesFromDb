@@ -14,10 +14,9 @@ namespace FilesFinder
 			var fields = new List<string> { idField, pathField };
 			fields.AddRange(infoFields);
 
-			var query = $@"
+			return $@"
 				SELECT {string.Join(", ", fields)}
-				FROM {tableName}";
-			return query + ";";
+				FROM {tableName};";
 		}
 
 		public static string RecreateResultsTable(string tableName)
