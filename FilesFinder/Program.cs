@@ -16,6 +16,7 @@ namespace FilesFinder
 	// ReSharper disable once ArrangeTypeModifiers
 	class Program
 	{
+		// ReSharper disable once ArrangeTypeMemberModifiers
 		static void Main(string[] args)
 		{
 			LoggerInit();
@@ -42,7 +43,7 @@ namespace FilesFinder
 				await CheckFiles(data, target);
 			}
 		}
-
+ 
 		private static async Task<DataTable> GetRows(FinderTargetConfiguration target)
 		{
 			var query = Queries.SelectTargetRowsQuery(

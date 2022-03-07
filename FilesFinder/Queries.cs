@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace FilesFinder
 {
-	public class Queries
+	public static class Queries
 	{
 		public static string SelectTargetRowsQuery(
 			string tableName,
