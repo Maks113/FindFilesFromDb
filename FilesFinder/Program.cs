@@ -12,6 +12,8 @@ using Serilog.Exceptions;
 
 namespace FilesFinder
 {
+	// ReSharper disable once ClassNeverInstantiated.Global
+	// ReSharper disable once ArrangeTypeModifiers
 	class Program
 	{
 		static void Main(string[] args)
@@ -34,7 +36,7 @@ namespace FilesFinder
 			var configuration = Configuration.GetFinderConfiguration();
 			foreach (var target in configuration.Targets)
 			{
-				Log.Information(@$"Поиск файлов в таблице {target.TableName} в поле {target.PathField}");
+				Log.Information("Поиск файлов в таблице {TableName} в поле {PathField}", target.TableName, target.PathField);
 
 				var data = await GetRows(target);
 				await CheckFiles(data, target);
@@ -49,9 +51,9 @@ namespace FilesFinder
 				target.IdField ?? "ID",
 				target.InfoFields?.Select(value => value.FieldName) ?? new List<string>()
 			);
-			Log.Debug("Запрос - " + query);
+			Log.Debug("Запрос - {Query}", query);
 			var result = await SqlCmdUtil.RunRawSql(query);
-			Log.Debug($@"Выбрано строк - {result.Rows.Count}");
+			Log.Debug("Выбрано строк - {Count}", result.Rows.Count);
 			return result;
 		}
 
@@ -122,7 +124,7 @@ namespace FilesFinder
 				}
 				else
 				{
-					Log.Warning($@"   >>> Файл не найден: {path}");
+					Log.Warning("   >>> Файл не найден: {Path}", path);
 					notFoundedFiles += 1;
 					await notFoundLog.WriteLineAsync(result);
 					await notFoundCsv.WriteLineAsync(
@@ -147,7 +149,7 @@ namespace FilesFinder
 
 			foreach (var statLine in statLines)
 			{
-				Log.Information(statLine);
+				Log.Information("{StatLine}",statLine);
 				await searchLog.WriteLineAsync(statLine);
 				await foundLog.WriteLineAsync(statLine);
 			}
@@ -160,7 +162,7 @@ namespace FilesFinder
 			fieldName = regexp.Replace(fieldName, "");
 			var name = $@"del_FileSearchResults_{tableName}_{fieldName}";
 			var query = Queries.RecreateResultsTable(name);
-			Log.Debug("Пересоздание таблицы - " + query);
+			Log.Debug("Пересоздание таблицы - {Query}", query);
 
 			await SqlCmdUtil.RunRawSql(query);
 
@@ -173,14 +175,14 @@ namespace FilesFinder
 			foreach (var chunk in chunks)
 			{
 				query = Queries.InsertResults(name, chunk);
-				Log.Debug("Вставка данных - " + query);
+				Log.Debug("Вставка данных - {Query}", query);
 				await SqlCmdUtil.RunRawSql(query);
 			}
 		}
 
 		private static long? CheckFileSize(string path)
 		{
-			Log.Debug($@"Проверка файла: {path}");
+			Log.Debug("Проверка файла: {Path}", path);
 			var fi = new FileInfo(path);
 			if (fi.Exists)
 			{
