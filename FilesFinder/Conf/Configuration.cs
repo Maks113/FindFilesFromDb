@@ -13,11 +13,11 @@ namespace FilesFinder.Conf
 				.Build();
 		}
 
-		public static DatabaseConfig GetDbConfiguration()
+        public static DatabaseConfiguration GetDbConfiguration()
 		{
 			return GetAppConfiguration()
-				.GetSection(nameof(DatabaseConfig))
-				.Get<DatabaseConfig>();
+				.GetSection(nameof(DatabaseConfiguration))
+				.Get<DatabaseConfiguration>();
 		}
 		
 		public static FinderConfiguration GetFinderConfiguration()
@@ -25,6 +25,19 @@ namespace FilesFinder.Conf
 			return GetAppConfiguration()
 				.GetSection(nameof(FinderConfiguration))
 				.Get<FinderConfiguration>();
+		}	
+		
+		public static FilesetsConfiguration GetFilesetsConfiguration()
+		{
+			return GetAppConfiguration()
+				.GetSection(nameof(FilesetsConfiguration))
+				.Get<FilesetsConfiguration>();
+		}		
+		public static UserConfiguration GetUserConfiguration()
+		{
+			return GetAppConfiguration()
+				.GetSection(nameof(UserConfiguration))
+				.Get<UserConfiguration>();
 		}
 	}
 }

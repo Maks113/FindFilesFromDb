@@ -6,16 +6,35 @@ using System.Threading.Tasks;
 using FilesFinder.Conf;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace FilesFinder
 {
 	public static class SqlCmdUtil
 	{
 
+		public static async Task<bool> CheckConnection()
+		{
+			var connectionString = BuildRunRawSqlConnectionString(Configuration.GetDbConfiguration());
+			await using (var connection = new SqlConnection(connectionString))
+			{
+				try
+				{
+					connection.Open();
+					return true;
+				}
+				catch (SqlException)
+				{
+					return false;
+				}
+			}
+		}
+		
 		public static async Task<DataTable> RunRawSql(
 			string sql,
 			IDictionary<string, object> parameters = null)
 		{
+			Log.Debug("Запрос - {Query}", sql);
 			var connectionString = BuildRunRawSqlConnectionString(Configuration.GetDbConfiguration());
 			var dataTable = new DataTable();
 			await using (var connection = new SqlConnection(connectionString))
@@ -59,7 +78,7 @@ namespace FilesFinder
 			cmd.Parameters.AddRange(sqlParams);
 		}
 
-		private static string BuildRunRawSqlConnectionString(DatabaseConfig connectionSettings)
+		private static string BuildRunRawSqlConnectionString(DatabaseConfiguration connectionSettings)
 		{
 			var builder = new SqlConnectionStringBuilder
 			{

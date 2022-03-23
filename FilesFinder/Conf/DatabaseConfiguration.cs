@@ -1,6 +1,6 @@
 namespace FilesFinder.Conf
 {
-	public class DatabaseConfig
+	public class DatabaseConfiguration
 	{
 		public string ServerName { get; set; }
 		public string User { get; set; }

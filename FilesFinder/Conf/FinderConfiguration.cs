@@ -10,6 +10,8 @@ namespace FilesFinder.Conf
 		public string TableName { get; set; }
 		public string PathField { get; set; }
 		public string IdField { get; set; }
+		public string FilesetId { get; set; }
+		public string FilesetFieldName { get; set; }
 		public FinderTargetField[] InfoFields { get; set; }
 	}
 
