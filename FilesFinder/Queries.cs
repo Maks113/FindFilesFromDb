@@ -56,6 +56,7 @@ namespace FilesFinder
 				  id INT IDENTITY
 				 ,fileset_id UNIQUEIDENTIFIER NOT NULL
 				 ,path TEXT NOT NULL
+				 ,full_path TEXT NOT NULL
 				 ,creation_date DATETIME NOT NULL
 				 ,user_id INT NOT NULL
 				 ,size DECIMAL NOT NULL
@@ -93,8 +94,8 @@ namespace FilesFinder
 				SET {target.FilesetFieldName} = '{fileInfoDto.FilesetId}'
 				WHERE dbo.{target.TableName}.{target.IdField} = {targetRowId};
 
-				INSERT INTO {filesetTableName} (fileset_id, path, creation_date, user_id, size, name)
-				VALUES ('{fileInfoDto.FilesetId}', '{fileInfoDto.Path}', '{date}', '{fileInfoDto.UserId}', '{fileInfoDto.Size}', '{fileInfoDto.Name}');
+				INSERT INTO {filesetTableName} (fileset_id, full_path, path, creation_date, user_id, size, name)
+				VALUES ('{fileInfoDto.FilesetId}', '{fileInfoDto.FullPath}', '{fileInfoDto.Path}', '{date}', '{fileInfoDto.UserId}', '{fileInfoDto.Size}', '{fileInfoDto.Name}');
 			";
 		}
 

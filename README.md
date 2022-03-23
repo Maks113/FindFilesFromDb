@@ -6,13 +6,17 @@
 
 ```json5
 {
-  "DatabaseConfig": {
+  "UserConfiguration": {
+    // Id пользователя, от имени которого будут добавляться файлы
+    "Id": 1
+  },
+  "DatabaseConfiguration": {
     // Имя сервера БД
     "ServerName": "",
     // Пользователь
-    "User": "maks113",
+    "User": "login",
     // Пароль
-    "Password": "zcsqzcsq",
+    "Password": "password",
     // Имя базы даннх
     "DatabaseName": "db_tm_mini"
   },
@@ -20,24 +24,42 @@
     // Целевые таблицы и поля
     "Targets": [
       {
+        // Идентификатор хранилища для добавления файлов из этой таблицы (FilesetsConfiguration.Filesets[0].Id) 
+        "FilesetId": "documents",
+        // Имя поля, в которое будет записываться filesetId
+        "FilesetFieldName": "fileset_id",
         // Название таблицы
-        "TableName": "tbl_contract",
+        "TableName": "contract",
         // Поле, содержащее путь к файлу
-        "PathField": "[doc_path]",
+        "PathField": "path",
         // Поле с id этой таблицы
-        "IdField": "[ID]",
+        "IdField": "ID",
         // дополнительные поля для включения в лог
         "InfoFields": [
           {
             // Имя поля
-            "FieldName": "[NUM_OF]",
+            "FieldName": "NUM_OF",
             // подсказка для лога
             "Description": "номер контракта"
           }
         ]
       }
     ]
-  }
+  },
+  "FilesetsConfiguration": {
+    "Filesets": [
+      {
+        // Идентификатор хранилища
+        "Id": "documents",
+        // Имя таблицы для хранения информации о файлах
+        "TableName": "tbl_documents_fileset",
+        // Базовый путь к хранилищу
+        "Host": "\\\\192.168.1.1",
+        // Дополнительный (создаваемый) путь
+        "StaticPath": "\\documents"
+      }
+    ]
+  },
 }
 ```
 

@@ -350,12 +350,14 @@ namespace FilesFinder
 		{
 			var guid = Guid.NewGuid().ToString();
 			var userConfig = Configuration.GetUserConfiguration();
-			var basePath = $@"{fileset.Host}{fileset.StaticPath}\{guid}\";
-			Directory.CreateDirectory(basePath);
+			var basePath = $@"{fileset.Host}{fileset.StaticPath}\";
+			
 			var fi = new FileInfo(path);
 			var date = DateTime.Now.ToString("yyyy.MM.dd_hh.mm.ss.fff");
 			var newFilename = $@"{Path.GetFileNameWithoutExtension(fi.Name)}_{date}{fi.Extension}";
-			var newPath = $@"{basePath}{newFilename}";
+			var filePath = $@"{guid}\{newFilename}";
+			var newPath = $@"{basePath}{filePath}";
+			Directory.CreateDirectory(Path.GetDirectoryName(newPath));
 			Log.Information("Копирование файла из {Path} в {NewPath}", path, newPath);
 			File.Copy(path, newPath, true);
 			
@@ -363,7 +365,8 @@ namespace FilesFinder
 			var fileInfo = new FileInfoDto
 			{
 				Name = fi.Name,
-				Path = newPath,
+				FullPath = newPath,
+				Path = filePath,
 				Size = fi.Length,
 				CreationDate = DateTime.Now,
 				FilesetId = guid,
