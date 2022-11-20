@@ -39,5 +39,12 @@ namespace FilesFinder.Conf
 				.GetSection(nameof(UserConfiguration))
 				.Get<UserConfiguration>();
 		}
+		
+		public static PathMapConfiguration GetPathMappingConfig()
+		{
+			return GetAppConfiguration()
+				.GetSection(nameof(PathMapConfiguration))
+				.Get<PathMapConfiguration>();
+		}
 	}
 }

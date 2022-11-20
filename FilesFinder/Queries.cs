@@ -55,8 +55,8 @@ namespace FilesFinder
 				CREATE TABLE dbo.{tableName} (
 				  id INT IDENTITY
 				 ,fileset_id UNIQUEIDENTIFIER NOT NULL
-				 ,path TEXT NOT NULL
-				 ,full_path TEXT NOT NULL
+				 ,path TEXT NULL
+				 ,full_path TEXT NULL
 				 ,creation_date DATETIME NOT NULL
 				 ,user_id INT NOT NULL
 				 ,size DECIMAL NOT NULL
@@ -84,18 +84,18 @@ namespace FilesFinder
 		public static string InsertFileInfo (
 			FinderTargetConfiguration target, 
 			string targetRowId,
-			string filesetTableName,
-			FileInfoDto fileInfoDto
+			string filesetTableName
+			// FileInfoDto fileInfoDto
 			)
 		{
-			var date = fileInfoDto.CreationDate.ToString("yyyy-MM-dd hh:mm:ss:fff");
+			// var date = fileInfoDto.CreationDate.ToString("yyyy-MM-dd HH:mm:ss:fff");
 			return $@"
 				UPDATE dbo.{target.TableName}
-				SET {target.FilesetFieldName} = '{fileInfoDto.FilesetId}'
+				SET {target.FilesetFieldName} = @FilesetId
 				WHERE dbo.{target.TableName}.{target.IdField} = {targetRowId};
 
 				INSERT INTO {filesetTableName} (fileset_id, full_path, path, creation_date, user_id, size, name)
-				VALUES ('{fileInfoDto.FilesetId}', '{fileInfoDto.FullPath}', '{fileInfoDto.Path}', '{date}', '{fileInfoDto.UserId}', '{fileInfoDto.Size}', '{fileInfoDto.Name}');
+				VALUES (@FilesetId, @FullPath, @Path, @Date, @UserId, @Size, @Name);
 			";
 		}
 
@@ -107,6 +107,16 @@ namespace FilesFinder
 			return $@"
 				INSERT INTO {tableName} (external_id, is_founded)
 				VALUES {string.Join(", ", resultStrings)}
+			";
+		}
+
+		public static string GetFileInfo(FinderTargetConfiguration filesConf, Fileset filesetConf)
+		{
+			return $@"
+				SELECT fs.id, fs.fileset_id, fs.path, fs.full_path, fs.creation_date, fs.user_id, fs.size, fs.name
+				FROM {filesConf.TableName} tn
+				INNER JOIN {filesetConf.TableName} fs on fs.fileset_id = tn.{filesConf.FilesetFieldName}
+				WHERE tn.{filesConf.IdField} = @ID;
 			";
 		}
 	}
