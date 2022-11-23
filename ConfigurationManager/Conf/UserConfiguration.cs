@@ -1,4 +1,4 @@
-namespace FilesFinder.Conf;
+namespace ConfigurationManager.Conf;
 
 public class UserConfiguration
 {

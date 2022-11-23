@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using FilesFinder.Conf;
+﻿using System.Data;
+using ConfigurationManager.Conf;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using Serilog;
 
-namespace FilesFinder
+namespace SqlCmdTools
 {
 	public static class SqlCmdUtil
 	{
@@ -34,7 +30,7 @@ namespace FilesFinder
 			string sql,
 			IDictionary<string, object> parameters = null)
 		{
-			Log.Debug("Запрос - {Query}", sql);
+			Log.Debug("    >>>> Запрос - {Query}", sql);
 			var connectionString = BuildRunRawSqlConnectionString(Configuration.GetDbConfiguration());
 			var dataTable = new DataTable();
 			await using (var connection = new SqlConnection(connectionString))
@@ -78,20 +74,25 @@ namespace FilesFinder
 			cmd.Parameters.AddRange(sqlParams);
 		}
 
-		private static string BuildRunRawSqlConnectionString(DatabaseConfiguration connectionSettings)
+		private static string BuildRunRawSqlConnectionString(DatabaseConfiguration? connectionSettings)
 		{
-			var builder = new SqlConnectionStringBuilder
+			if (connectionSettings != null)
 			{
-				DataSource = string.IsNullOrEmpty(connectionSettings.ServerName)
-					? "."
-					: connectionSettings.ServerName,
-				UserID = connectionSettings.User,
-				ConnectTimeout = connectionSettings.ConnectTimeout,
-				Password = connectionSettings.Password,
-				InitialCatalog = connectionSettings.DatabaseName,
-				TrustServerCertificate = true
-			};
-			return builder.ConnectionString;
+				var builder = new SqlConnectionStringBuilder
+				{
+					DataSource = string.IsNullOrEmpty(connectionSettings.ServerName)
+						? "."
+						: connectionSettings.ServerName,
+					UserID = connectionSettings.User,
+					ConnectTimeout = connectionSettings?.ConnectTimeout ?? 300,
+					Password = connectionSettings?.Password,
+					InitialCatalog = connectionSettings?.DatabaseName,
+					TrustServerCertificate = true
+				};
+				return builder.ConnectionString;
+			}
+
+			throw new Exception("Отсутствуют настройки подключения к БД");
 		}
 	}
 }

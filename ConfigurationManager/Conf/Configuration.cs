@@ -1,7 +1,6 @@
-using System;
 using Microsoft.Extensions.Configuration;
 
-namespace FilesFinder.Conf
+namespace ConfigurationManager.Conf
 {
 	public class Configuration
 	{
@@ -13,34 +12,34 @@ namespace FilesFinder.Conf
 				.Build();
 		}
 
-        public static DatabaseConfiguration GetDbConfiguration()
+        public static DatabaseConfiguration? GetDbConfiguration()
 		{
 			return GetAppConfiguration()
 				.GetSection(nameof(DatabaseConfiguration))
 				.Get<DatabaseConfiguration>();
 		}
 		
-		public static FinderConfiguration GetFinderConfiguration()
+		public static FinderConfiguration? GetFinderConfiguration()
 		{
 			return GetAppConfiguration()
 				.GetSection(nameof(FinderConfiguration))
 				.Get<FinderConfiguration>();
 		}	
 		
-		public static FilesetsConfiguration GetFilesetsConfiguration()
+		public static FilesetsConfiguration? GetFilesetsConfiguration()
 		{
 			return GetAppConfiguration()
 				.GetSection(nameof(FilesetsConfiguration))
 				.Get<FilesetsConfiguration>();
 		}		
-		public static UserConfiguration GetUserConfiguration()
+		public static UserConfiguration? GetUserConfiguration()
 		{
 			return GetAppConfiguration()
 				.GetSection(nameof(UserConfiguration))
 				.Get<UserConfiguration>();
 		}
 		
-		public static PathMapConfiguration GetPathMappingConfig()
+		public static PathMapConfiguration? GetPathMappingConfig()
 		{
 			return GetAppConfiguration()
 				.GetSection(nameof(PathMapConfiguration))

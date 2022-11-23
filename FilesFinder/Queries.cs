@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using FilesFinder.Conf;
+using ConfigurationManager.Conf;
 
 namespace FilesFinder
 {
@@ -18,6 +18,21 @@ namespace FilesFinder
 			return $@"
 				SELECT {string.Join(", ", fields)}
 				FROM {tableName};";
+		}
+		
+		public static string SelectTargetRowsForFixQuery(
+			string tableName,
+			string pathField,
+			string idField,
+			IEnumerable<string> infoFields)
+		{
+			var fields = new List<string> { idField, pathField };
+			fields.AddRange(infoFields);
+
+			return $@"
+				SELECT {string.Join(", ", fields)}
+				FROM {tableName}
+				WHERE ISNULL({pathField}, '') <> '';";
 		}
 
 		public static string RecreateResultsTable(string tableName)

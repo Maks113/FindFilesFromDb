@@ -1,8 +1,8 @@
-using FilesFinder.Conf;
+﻿using ConfigurationManager.Conf;
 using Serilog;
 using Serilog.Exceptions;
 
-namespace FilesFinder;
+namespace ConfigurationManager;
 
 public static class AppLogger
 {
