@@ -43,6 +43,14 @@ namespace FilesExtractor // Note: actual namespace depends on the project name.
 			public string TargetFilesetId { get; set; }
 
 			[Option(
+				's', "suffix",
+				Required = false,
+				Default = "",
+				HelpText = "Суффикс, который добавится в имя файла")
+			]
+			public string Suffix { get; set; }
+			
+			[Option(
 				"test",
 				Required = false,
 				HelpText = "Тестовый запуск без копирования файлов")
@@ -112,17 +120,30 @@ namespace FilesExtractor // Note: actual namespace depends on the project name.
 				if (filesetId == null || filesetId.ToLower() == "null")
 				{
 					Log.Information("    >>> Пустой id файла в хранилище");
-					continue;;
+					continue;
+					;
 				}
+
 				Log.Information("    >>> id файла в хранилище: {Id}", filesetId);
 
 				var linePath = GetPathByTemplate(_runOptions.TargetPath, headers, line);
 				Log.Information("    >>> Путь копирования: {Path}", linePath);
+				linePath = ReplaceIllegalCharacters(linePath);
+				Log.Information("    >>> Исправленный путь копирования: {Path}", linePath);
 
 				var selectedFile = await getFileFromStorage(filesetConf, filesetId);
 				var from = $"{filesetConf.Host}/{filesetConf.StaticPath}/{selectedFile?.Path}";
 				var to = $"{linePath}/{selectedFile?.Name}";
-				
+
+				to = FixWhitespaces(to);
+				to = AddFileSuffix(to, _runOptions.Suffix);
+
+				if (File.Exists(to))
+				{
+					Log.Information("    >>> Найден дубликат файла: {Path}", to);
+					to = IncreaseFileIndex(to);
+				}
+
 				if (!_runOptions.Test)
 				{
 					Log.Information("    >>> Копирование: {From} -> {To}", from, to);
@@ -190,6 +211,54 @@ namespace FilesExtractor // Note: actual namespace depends on the project name.
 			
 			File.Copy(from, to, true);
 			Log.Information("    >>> Успешно");
+		}
+
+		private static string ReplaceIllegalCharacters(string path)
+		{
+			var regexSearch = new string(Path.GetInvalidPathChars());
+			var r = new Regex($"[{Regex.Escape(regexSearch)}\"]");
+			return r.Replace(path, "");
+		}
+
+		private static string FixWhitespaces(string path)
+		{
+			var newPath = path.Replace("[]", " ");
+			Log.Information("    >>> Исправление пробелов: {Path} -> {NewPath}", path, newPath);
+			return newPath;
+		}
+		
+		private static string AddFileSuffix(string path, string suffix)
+		{
+			var fileName = $@"{Path.GetFileName(path)}_{suffix}";
+
+			var dir = Path.GetDirectoryName(path) ?? "";
+			var ext = Path.GetExtension(path);
+			var newPath = Path.Combine(dir, fileName, ext); 
+			Log.Information("    >>> Добавление суффикса {Suffix}: {Path} -> {NewPath}", suffix, path, newPath);
+			return newPath;
+		}
+		
+		private static string IncreaseFileIndex(string path)
+		{
+			var regEx = new Regex(@"_(\d)+$");
+			var fileName = Path.GetFileName(path);
+			var match = regEx.Match(fileName);
+
+			if (match.Groups.Count > 0 && int.TryParse(match.Groups[0].Value, out var index))
+			{
+				fileName = fileName.Replace($@"_{index}", $@"_{index + 1}");
+			}
+			else
+			{
+				fileName += "_1";
+			}
+
+
+			var dir = Path.GetDirectoryName(path) ?? "";
+			var ext = Path.GetExtension(path);
+			var newPath = Path.Combine(dir, fileName, ext); 
+			Log.Information("    >>> Добавление индекса дубликату: {Path} -> {NewPath}", path, newPath);
+			return newPath;
 		}
 	}
 }
