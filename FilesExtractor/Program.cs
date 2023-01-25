@@ -121,7 +121,6 @@ namespace FilesExtractor // Note: actual namespace depends on the project name.
 				{
 					Log.Information("    >>> Пустой id файла в хранилище");
 					continue;
-					;
 				}
 
 				Log.Information("    >>> id файла в хранилище: {Id}", filesetId);

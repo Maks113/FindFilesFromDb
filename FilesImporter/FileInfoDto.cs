@@ -1,6 +1,6 @@
 using System;
 
-namespace FilesFinder;
+namespace FilesImporter;
 
 public class FileInfoDto
 {

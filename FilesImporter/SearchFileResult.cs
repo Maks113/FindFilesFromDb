@@ -1,4 +1,4 @@
-namespace FilesFinder
+namespace FilesImporter
 {
 	public class SearchFileResult
 	{
