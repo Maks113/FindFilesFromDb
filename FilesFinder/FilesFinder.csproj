@@ -13,7 +13,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\ConfigurationManager\ConfigurationManager.csproj" />
-      <ProjectReference Include="..\FilesImporter\FilesImporter.csproj" />
       <ProjectReference Include="..\SqlCmdTools\SqlCmdTools.csproj" />
     </ItemGroup>
 

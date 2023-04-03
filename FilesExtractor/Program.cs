@@ -127,7 +127,7 @@ namespace FilesExtractor // Note: actual namespace depends on the project name.
 
 				var linePath = GetPathByTemplate(_runOptions.TargetPath, headers, line);
 				Log.Information("    >>> Путь копирования: {Path}", linePath);
-				linePath = ReplaceIllegalCharacters(linePath);
+				linePath = ReplacePathIllegalCharacters(linePath);
 				Log.Information("    >>> Исправленный путь копирования: {Path}", linePath);
 
 				var selectedFile = await getFileFromStorage(filesetConf, filesetId);
@@ -212,7 +212,7 @@ namespace FilesExtractor // Note: actual namespace depends on the project name.
 			Log.Information("    >>> Успешно");
 		}
 
-		private static string ReplaceIllegalCharacters(string path)
+		private static string ReplacePathIllegalCharacters(string path)
 		{
 			var regexSearch = new string(Path.GetInvalidPathChars());
 			var r = new Regex($"[{Regex.Escape(regexSearch)}\"]");
